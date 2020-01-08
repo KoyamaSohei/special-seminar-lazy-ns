@@ -1,4 +1,4 @@
-# special seminar kazy ns
+# special seminar lazy ns
 
 全てのDNSクエリ(`Aレコード`)で`TARGET_IP`を返すだけ
 
