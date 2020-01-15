@@ -15,6 +15,7 @@ var logger *zap.Logger
 
 func serve() {
 	i := os.Getenv("TARGET_IP")
+	d := os.Getenv("DNS_SERVER")
 	logger.Info("TARGET_IP is " + i)
 	dns.HandleFunc(".", func(w dns.ResponseWriter, r *dns.Msg) {
 		m := new(dns.Msg)
@@ -28,6 +29,19 @@ func serve() {
 					A:   net.ParseIP(i),
 				}
 				m.Answer = append(m.Answer, rr)
+			} else {
+				n := r.Question[k].Name
+				t := r.Question[k].Qtype
+				logger.Info("Fallback Q." + n)
+				q := dns.Msg{}
+				cl := dns.Client{}
+				q.SetQuestion(n, t)
+				res, _, err := cl.Exchange(&q, d+":53")
+				if err == nil {
+					for _, r := range res.Answer {
+						m.Answer = append(m.Answer, r)
+					}
+				}
 			}
 		}
 

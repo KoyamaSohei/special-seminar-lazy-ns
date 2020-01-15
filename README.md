@@ -5,4 +5,4 @@
 ## Environment Variables
 
 - TARGET_IP(required)
-
+- DNS_SERVER(required)
